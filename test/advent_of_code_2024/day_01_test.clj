@@ -31,3 +31,12 @@
 
 
 
+(deftest test-day-02
+  (testing "part 1 examples"
+
+
+
+
+    )
+
+  )
