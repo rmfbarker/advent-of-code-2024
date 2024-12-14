@@ -25,19 +25,43 @@
       (< (abs (- a b)) 4))
     (partition 2 1 report-line)))
 
-(defn valid-report? [report]
+(defn safe-report? [report]
   (and (valid-ordering? report)
        (valid-steps? report)))
-
 
 (defn solve-part-1 [input]
   (count
     (filter
-      valid-report?
+      safe-report?
       (map numerals->ints input))))
 
 (defn -main []
   (solve-part-1 (str/split-lines example-input))
-  (solve-part-1 (str/split-lines challenge-input))
+  (solve-part-1 (str/split-lines challenge-input))          ;; => 572
 
   )
+
+(defn remove-item [i coll]
+  (concat (subvec coll 0 i)
+          (subvec coll (inc i))))
+
+(defn safe-report-remove-item? [report]
+ (let [v-invalid     (vec report)]
+   ;(println "original" v-invalid)
+   (reduce (fn [_ x]
+             ;(println "x " x)
+             (let [chopped-vec (remove-item x v-invalid)
+                   result      (safe-report? chopped-vec)]
+               ;(println "chopped " chopped-vec)
+               ;(println result)
+               (if result (reduced result))))
+           nil
+           (range (count report))
+           )
+   ))
+
+(let [reports (parse-input challenge-input)
+      invalid-reports
+              (filter (complement safe-report?) reports)]
+  (println "total number of invalid reports"    (count invalid-reports))
+  (count (filter safe-report-remove-item? invalid-reports))) ;==> 40
