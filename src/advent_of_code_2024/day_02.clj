@@ -46,22 +46,16 @@
           (subvec coll (inc i))))
 
 (defn safe-report-remove-item? [report]
- (let [v-invalid     (vec report)]
-   ;(println "original" v-invalid)
-   (reduce (fn [_ x]
-             ;(println "x " x)
-             (let [chopped-vec (remove-item x v-invalid)
-                   result      (safe-report? chopped-vec)]
-               ;(println "chopped " chopped-vec)
-               ;(println result)
-               (if result (reduced result))))
-           nil
-           (range (count report))
-           )
-   ))
+  (let [v-invalid (vec report)]
+    (reduce (fn [_ x]
+              (let [chopped-vec (remove-item x v-invalid)
+                    result      (safe-report? chopped-vec)]
+                (if result (reduced result))))
+            nil
+            (range (count report)))))
 
 (let [reports (parse-input challenge-input)
       invalid-reports
               (filter (complement safe-report?) reports)]
-  (println "total number of invalid reports"    (count invalid-reports))
+  (println "total number of invalid reports" (count invalid-reports))
   (count (filter safe-report-remove-item? invalid-reports))) ;==> 40
